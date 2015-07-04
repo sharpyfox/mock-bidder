@@ -17,9 +17,10 @@ type RequestsHandler struct {
 func (r *RequestsHandler) buildResponse(rd *rand.Rand, req *openrtb.Request) openrtb.Response {
 	cur := "RUB"
 	pr := rd.Float32()
+	markup := "markup here"
 	return openrtb.Response{
 		Id:      req.Id,
-		Seatbid: []openrtb.Seatbid{openrtb.Seatbid{Bid: []openrtb.Bid{openrtb.Bid{Id: req.Imp[0].Id, Price: &pr}}}},
+		Seatbid: []openrtb.Seatbid{openrtb.Seatbid{Bid: []openrtb.Bid{openrtb.Bid{Id: req.Imp[0].Id, Adm: &markup, Price: &pr, Impid: req.Imp[0].Id}}}},
 		Cur:     &cur,
 	}
 }
