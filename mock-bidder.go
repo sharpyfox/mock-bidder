@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sharpyfox/mock-bidder/http_handlers"
 	"github.com/sharpyfox/mock-bidder/utils"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 func main() {
 	pr := flag.Float64("pr", 0.9, "non empty response probability")
 	portPtr := flag.Int("p", 7040, "port to start http server")
+	markupFilePath := flag.String("mf", "markup.html", "path to markup file")
 	showVersion := flag.Bool("version", false, "print version string")
 	flag.Parse()
 
@@ -21,7 +23,13 @@ func main() {
 		return
 	}
 
-	h := http_handlers.RequestsHandler{Probability: float32(*pr)}
+	markup_bytes, err := ioutil.ReadFile(*markupFilePath)
+	if nil != err {
+		log.Fatal(err.Error())
+	}
+	markup := string(markup_bytes[:])
+
+	h := http_handlers.RequestsHandler{Probability: float32(*pr), Markup: markup}
 	http.HandleFunc("/auctions", func(w http.ResponseWriter, r *http.Request) {
 		h.HandleResponse(w, r)
 	})
