@@ -13,6 +13,7 @@ import (
 type RequestsHandler struct {
 	Probability float32
 	Markup      string
+	Delay       int
 }
 
 func (r *RequestsHandler) buildResponse(rd *rand.Rand, req *openrtb.Request) openrtb.Response {
@@ -46,6 +47,8 @@ func (h *RequestsHandler) HandleResponse(w http.ResponseWriter, r *http.Request)
 			h.sendEmptyResponse(w)
 			return
 		}
+
+		time.Sleep(time.Duration(h.Delay) * time.Millisecond)
 
 		resp := h.buildResponse(r, req)
 		bin, err := json.Marshal(resp)
